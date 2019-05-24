@@ -9,6 +9,7 @@
     <link rel="stylesheet" type="text/css" href="css/reset.css">
     <link rel="stylesheet" type="text/css" href="css/iconfont.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" href="./js/bootstrap/css/bootstrap.min.css">
 </head>
 
 <body>
@@ -29,8 +30,72 @@
             </form>
         </div>
 
-    </div> 
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">提示框</h4>
+                </div>
+                <div class="modal-body my-modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">狠心关闭</button>
+                    <button type="button" class="btn btn-primary">残忍离开</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <script src="./js/jquery-1.12.4.min.js"></script>
+    <script src="./js/bootstrap/js/bootstrap.min.js"></script>
 
 </body>
+<script>
+    $(function () {
+        /*
+       用户登录
+       1. 为登录按钮绑定点击事件
+       2. 获取用户名 和 密码
+           1. 去空格
+           2. 非空判断 
+           3. 空 提示
+           4. 有 继续执行
+       3. ajax调用登录接口
+           1. 成功
+               1. 去首页
+           2. 失败
+               1. 提示用户
+   */
+        $('.input_sub').click(function (e) {
+            e.preventDefault()
+            var user_name = $('.input_txt').val().trim()
+            var password = $('.input_pass').val().trim()
+            if (user_name == '' || password == '') {
+                $('. my-modal-body').text('记得输入用户名或密码')
+                $('#myModal').modal()
+                return
+            }
+            $.ajax({
+                url: ' https://autumnfish.cn/big/admin/login',
+                data: {
+                    user_name: user_name,
+                    password: password
+                },
+                type: 'post',
+                success: function (backData) {
+                    console.log(backData)
+                    if (backData.code == 200) {
+                        window.location.href = 'index.html'
+                    } else if (backData.code == 400) {
+                        $('.modal-body').text('请输入正确的账户和密码')
+                        $('#myModal').modal()
+                    }
+                }
+            })
+        })
+    })
+</script>
 
 </html>

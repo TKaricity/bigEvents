@@ -71,7 +71,7 @@
     <script>
         /*
      获取用户的详细信息
-         请求地址：https://autumnfish.cn/big32/admin/userinfo_get
+         请求地址：http://localhost:8000/admin/userinfo_get
          请求方式：get
          请求参数：无
          进入之后，获取用户的信息，渲染到页面上
@@ -87,7 +87,7 @@
        4. 设置给隔壁的img即可
 
      保存修改
-       请求地址：https://autumnfish.cn/big32/admin/userinfo_edit
+       请求地址：http://localhost:8000/admin/userinfo_edit
        请求方式：post
        请求参数：使用formdata提交
        步骤
@@ -100,7 +100,7 @@
      */
         $(function () {
             $.ajax({
-                url: "https://autumnfish.cn/big32/admin/userinfo_get",
+                url: "http://localhost:8000/admin/userinfo_get",
                 type: 'get',
                 success: function (backData) {
                     for (const key in backData.data) {
@@ -118,7 +118,7 @@
                 e.preventDefault()
                 var formData = new FormData($('form')[0])
                 $.ajax({
-                    url: 'https://autumnfish.cn/big32/admin/userinfo_edit',
+                    url: 'http://localhost:8000/admin/userinfo_edit',
                     type: 'post',
                     data: formData,
                     contentType: false,

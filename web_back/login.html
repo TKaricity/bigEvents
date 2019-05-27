@@ -75,7 +75,8 @@
             var user_name = $('.input_txt').val().trim()
             var password = $('.input_pass').val().trim()
             if (user_name == '' || password == '') {
-                $('. my-modal-body').text('记得输入用户名或密码')
+                $('.my-modal-body').text('记得输入用户名或密码')
+                $('.btn-primary').remove()
                 $('#myModal').modal()
                 return
             }
@@ -89,7 +90,7 @@
                 success: function (backData) {
                     console.log(backData)
                     if (backData.code == 200) {
-                        window.location.href = 'index.html'
+                        window.location.href = './index.html'
                     } else if (backData.code == 400) {
                         $('.modal-body').text('请输入正确的账户和密码')
                         $('#myModal').modal()

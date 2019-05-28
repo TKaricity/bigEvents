@@ -119,12 +119,6 @@
         });
 
         $('#model_shutoff').click(function () {
-            alert('shutoff');
-            $('#addModal').modal('hide');
-        });
-
-        $('#model_add').click(function () {
-            alert('add');
             $('#addModal').modal('hide');
         });
 
@@ -229,6 +223,7 @@
                 $('#model_add')
                     .text('保存')
                     .addClass('btn-success')
+
             }
             // 点击新增还原外观
             $('.btn-add').click(function () {
@@ -241,21 +236,45 @@
             getCate()
             // 点击新增按钮
             $('#model_add').click(function () {
-                $.ajax({
-                    url: 'http://localhost:8000/admin/category_add',
-                    type: 'post',
-                    data: {
-                        name: $('.cate_name').val(),
-                        slug: $('.cate_slug').val()
-                    },
-                    success: function (backData) {
-                        $('#addModal').modal('hide')
-                        if (backData.code == 200) {
-                            //  重新获取数据
-                            getCate()
+                if ($(this).hasClass('btn-success')) {
+                    // var id = $('input[name=id').val()
+                    // var slug = $('input[name=slug').val()
+                    // var name = $('input[name=name').val()
+                    $.ajax({
+                        url: "http://localhost:8000/admin/category_edit",
+                        type: 'post',
+                        // data:{
+                        //     id:id,
+                        //     slug:slug,
+                        //     name:name
+                        // }
+                        data: $('form').serialize(),
+
+                        success: function (backData) {
+                            console.log(backData)
+                            if (backData.code == 200) {
+                                getCate()
+                            }
                         }
-                    }
-                })
+                    })
+                } else {
+                    $.ajax({
+                        url: 'http://localhost:8000/admin/category_add',
+                        type: 'post',
+                        data: {
+                            name: $('.cate_name').val(),
+                            slug: $('.cate_slug').val()
+                        },
+                        success: function (backData) {
+                            $('#addModal').modal('hide')
+                            if (backData.code == 200) {
+                                //  重新获取数据
+                                getCate()
+                            }
+                        }
+                    })
+                }
+                $('#addModal').modal('hide')
             })
         }) 
     </script>

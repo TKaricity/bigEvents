@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -326,34 +325,15 @@
         $(function () {
             // 页码
             var myPage = 1
-            // 获取文章数据的方法
-            function getArticles() {
-                $.ajax({
-                    url: 'http://localhost:8000/admin/search',
-                    data: {
-                        page: myPage,
-                        perpage: 6,
-                        type: $('#selCategory').val(),
-                        state: $('#selStatus').val()
-                    },
-                    success: function (backData) {
-                        var html = template('article', backData)
-                        $('tbody').html(html)
-                    }
-                })
-            }
-            // 获取分类数据
-            $.ajax({
-                url: 'http://localhost:8000/admin/category_search',
-                success: function (backData) {
-                    var html = template('cate', backData)
-                    $('#selCategory').append(html)
-                }
-            })
-            getArticles()
-            // 设置分页的插件
-            $('.pagination').twbsPagination({
-                totalPages: 35,
+            // 总页数
+            var myTotalPage = 10
+
+            // 根据分页插件的示例修改分页插件的使用
+
+           
+            var $pagination = $('.pagination')
+            var defaultOpts = {
+                totalPages: myTotalPage,
                 visiblePages: 7,
                 first: '最那边',
                 last: '最外头',
@@ -368,7 +348,62 @@
                     // 重新调用获取文章数据的方法
                     getArticles()
                 }
+            }
+            $pagination.twbsPagination(defaultOpts)
+             // 获取文章数据的方法
+            function getArticles() {
+                $.ajax({
+                    url: 'http://localhost:8000/admin/search',
+                    data: {
+                        page: myPage,
+                        perpage: 6,
+                        type: $('#selCategory').val(),
+                        state: $('#selStatus').val()
+                    },
+                    success: function (backData) {
+                        var html = template('article', backData)
+                        $('tbody').html(html)
+                        var totalPages=backData.totalPage
+                        if(myTotalPage!=totalPages){
+                            myTotalPage=totalPages
+                            $pagination.twbsPagination('destroy')
+                            $pagination.twbsPagination(
+                                $.extend({},defaultOpts,{
+                                    startPage:1,
+                                    totalPages:totalPages
+                                })
+                            )
+                        }
+                    }
+                })
+            }
+            // 获取分类数据
+            $.ajax({
+                url: 'http://localhost:8000/admin/category_search',
+                success: function (backData) {
+                    var html = template('cate', backData)
+                    $('#selCategory').append(html)
+                }
             })
+            getArticles()
+            // 设置分页的插件
+            // $('.pagination').twbsPagination({
+            //     totalPages: 35,
+            //     visiblePages: 7,
+            //     first: '最那边',
+            //     last: '最外头',
+            //     prev: '上一页',
+            //     next: '下一页',
+            //     onPageClick: function (event, page) {
+            //         // 事件参数
+            //         // console.log(event)
+            //         // 页码
+            //         // console.log(page)
+            //         myPage = page
+            //         // 重新调用获取文章数据的方法
+            //         getArticles()
+            //     }
+            // })
             $('#btnSearch').click(function (e) {
                 e.preventDefault()
                 getArticles()

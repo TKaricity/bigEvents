@@ -27,13 +27,14 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章标题：</label>
                     <div class="col-sm-10">
-                        <input type="email" class="form-control" id="inputEmail3" placeholder="文章标题"  name="title">
+                        <input type="email" class="form-control" id="inputEmail3" placeholder="文章标题" name="title">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputPassword3" class="col-sm-2 control-label">文章封面：</label>
                     <div class="col-sm-10">
-                        <input type="file" id="exampleInputFile">
+                            <img src="" alt="" class="preview" />
+                        <input type="file" id="exampleInputFile" name="cover">
                     </div>
                 </div>
                 <div class="form-group">
@@ -65,7 +66,7 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章内容：</label>
                     <div class="col-sm-10">
-                        <textarea class="form-control" id="rich_content"  placeholder="文章内容">
+                        <textarea class="form-control" id="rich_content" placeholder="文章内容">
                             Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda fugiat illo nihil molestias ab. Laborum eius non atque, totam sapiente quae obcaecati assumenda ratione inventore pariatur maiores, qui libero delectus.
                             </textarea>
                     </div>
@@ -79,7 +80,79 @@
             </form>
         </div>
     </div>
+    <!-- 导入模板引擎 -->
+    <script src="./js/template-web.js"></script>
+    <script type="text/html" id="cate">
+    {{each data v}}
+    <option value="{{v.id}}">{{v.name}}</option>
+    {{/each}}
+    </script>
+    <script>
+        /*
+            图片预览
+                步骤
+                1. 文件选择标签隔壁放一个 img 做预览
+                2. 为#exampleInputFile  表单元素 绑定change事件
+                3. files[0] 获取文件
+                4. URL.createObjectURL 生成url
+                5. 把url设置给img
 
+         文章类型获取
+            请求地址：http://localhost:8000/admin/category_search
+            请求方式：get
+            请求参数：无
+            步骤
+            1. 进入到新增页面之后
+            2. 通过ajax获取当前现有的类型数据
+            3. 渲染到页面上
+      点击新增
+          请求地址：http://localhost:8000/admin/article_publish
+          请求方式：post
+          请求参数：formData
+          步骤
+          1. 点击发布
+          2. 创建formData
+          3. ajax提交formData
+          4. 提交成功之后 提示用户
+
+        */
+        $(function () {
+            $('#exampleInputFile').change(function () {
+                var file = this.files[0]
+                var url = URL.createObjectURL(file)
+                $(this)
+                    .prev('img')
+                    .attr('src', url)
+            })
+            $.ajax({
+                url: 'http://localhost:8000/admin/category_search',
+                success: function (backData) {
+                    $('select').html(template('cate', backData))
+                }
+            })
+            $('.btn-publish').click(function (e) {
+                e.preventDefault()
+                // formData
+                // 有name的 title cover type date
+                // 没有的 content state
+                var formData = new FormData($('form')[0])
+                formData.append('content', tinyMCE.activeEditor.getContent())
+                formData.append('state', '草稿')
+                $.ajax({
+                    url: 'http://localhost:8000/admin/article_publish',
+                    type: 'post',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (backData) {
+                        console.log(backData);
+                    }
+                })
+            })
+        })
+
+
+    </script>
 </body>
 
 </html>
